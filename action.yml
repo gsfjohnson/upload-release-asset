@@ -7,6 +7,9 @@ inputs:
   files:
     description: 'Files to upload'
     required: true
+  github_token:
+    description: 'Requires secrets.GITHUB_TOKEN to publish assets'
+    required: true
   content_type:
     description: 'Content-type of the assets. https://www.iana.org/assignments/media-types/media-types.xhtml'
 

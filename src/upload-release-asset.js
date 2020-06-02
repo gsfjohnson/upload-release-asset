@@ -7,20 +7,25 @@ const mime = require('mime-types');
 
 async function run() {
   // catch thrown errors
+  let op;
   try {
     // initial
+    op='repo = github.context.repo';
     const repo = github.context.repo;
 
     // Get the inputs from the workflow file: https://github.com/actions/toolkit/tree/master/packages/core#inputsoutputs
     // const token = core.getInput( 'repo-token', { required: true } );
     // const uploadUrl = core.getInput('upload_url', { required: true });
+    op='core.getInput(files, { required: true })';
     const glob = core.getInput('files', { required: true });
-    let token = core.getInput('repo-token');
+
     // let contentType = core.getInput('content_type');
 
     // Get authenticated GitHub client (Ocktokit): https://github.com/actions/toolkit/tree/master/packages/github#usage
-    if ( !token ) token = process.env.GITHUB_TOKEN;
-    const octokit = new github.GitHub( token );
+    op='core.getInput(github-token)';
+    let token = core.getInput('github_token');
+    op='octokit = new github.GitHub(token)';
+    const octokit = new github.GitHub(token);
 
     // if ( tag )
     // {
@@ -33,7 +38,7 @@ async function run() {
     const action = github.context.payload.action;
     if ( !['published','created','prereleased'].includes(action) )
     {
-      core.warning('Cannot upload assets for release.type: ' + action )
+      core.setFailed(`Cannot upload assets for release.type: ${action}`)
       return;
     }
 
@@ -44,7 +49,7 @@ async function run() {
       core.setFailed('Could not find release');
       return;
     }
-    core.debug( `Uploading assets to release: ${release_id}...` );
+    core.debug(`Uploading assets to release: ${release_id}...`);
 
     // build files array
     const filepaths = await fastglob( glob.split( ';' ) );
@@ -91,7 +96,7 @@ async function run() {
     // core.setOutput('browser_download_url', browserDownloadUrl);
   }
   catch (error) {
-    core.setFailed(error.message);
+    core.setFailed(`${op}: ${error.message}`);
   }
 }
 
