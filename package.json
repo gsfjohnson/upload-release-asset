@@ -12,18 +12,19 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/actions/upload-release-asset"
+    "url": "git+https://github.com/redwain/upload-release-asset"
   },
   "keywords": [
     "actions",
     "node"
   ],
-  "author": "GitHub",
+  "author": "gsfjohnson",
   "license": "MIT",
   "dependencies": {
     "@actions/core": "^1.0.0",
-    "@actions/exec": "^1.0.0",
-    "@actions/github": "^1.0.0"
+    "@actions/github": "^1.0.0",
+    "fast-glob": "^3.0.4",
+    "mime-types": "^2.1.24"
   },
   "devDependencies": {
     "@zeit/ncc": "^0.20.4",

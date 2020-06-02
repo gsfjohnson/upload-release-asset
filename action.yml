@@ -1,25 +1,19 @@
 name: 'Upload a Release Asset'
-description: 'Upload a release asset to an existing release in your repository'
-author: 'GitHub'
+description: 'Upload release assets to a release in your repository'
+
 inputs:
   upload_url:
-    description: 'The URL for uploading assets to the release'
+    description: 'URL for uploading assets to the release'
+  files:
+    description: 'Files to upload'
     required: true
-  asset_path:
-    description: 'The path to the asset you want to upload'
-    required: true
-  asset_name:
-    description: 'The name of the asset you want to upload'
-    required: true
-  asset_content_type:
-    description: 'The content-type of the asset you want to upload. See the supported Media Types here: https://www.iana.org/assignments/media-types/media-types.xhtml for more information'
-    required: true
-outputs:
-  browser_download_url:
-    description: 'The URL users can navigate to in order to download the uploaded asset'
+  content_type:
+    description: 'Content-type of the assets. https://www.iana.org/assignments/media-types/media-types.xhtml'
+
 runs:
   using: 'node12'
   main: 'dist/index.js'
+
 branding:
   icon: 'package'
   color: 'gray-dark'
