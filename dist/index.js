@@ -6895,6 +6895,7 @@ async function run() {
     }
 
     // sanity: release_id
+    op=`release_id = github.context.payload.release.id`;
     const release_id = github.context.payload.release.id;
     if ( !release_id )
     {
@@ -6904,6 +6905,7 @@ async function run() {
     core.debug(`Uploading assets to release: ${release_id}...`);
 
     // build files array
+    op=`filepaths = await fastglob( glob.split( ';' ) )`;
     const filepaths = await fastglob( glob.split( ';' ) );
     if (!filepaths.length) {
       core.setFailed( 'No files found' );
@@ -6911,7 +6913,9 @@ async function run() {
     }
 
     // get release data
+    op=`await octokit.repos.getRelease( { ...repo, release_id } )`;
     const { data: { upload_url: url } } = await octokit.repos.getRelease( { ...repo, release_id } );
+    op=`await octokit.repos.listAssetsForRelease( { ...repo, release_id } )`;
     const { data: existingAssets } = await octokit.repos.listAssetsForRelease( { ...repo, release_id } );
 
     // upload
@@ -6920,9 +6924,11 @@ async function run() {
       const existingAsset = existingAssets.find( a => a.name === filepath );
       if ( existingAsset ) {
         core.debug( `Removing existing asset '${filepath}' with ID ${existingAsset.id}...` );
+        op=`octokit.repos.deleteReleaseAsset(${filepath})`;
         octokit.repos.deleteReleaseAsset( {...repo, asset_id: existingAsset.id } )
       }
 
+      op=`contentType = mime.lookup(${filepath}) || 'application/zip'`;
       let contentType = mime.lookup(filepath) || 'application/zip';
 
       console.log(`Uploading ${filepath}...`);
@@ -6938,6 +6944,7 @@ async function run() {
       // Octokit Documentation: https://octokit.github.io/rest.js/#octokit-routes-repos-upload-release-asset
       const name = nodePath.basename(filepath);
       const file = nodeFs.createReadStream(filepath);
+      op=`uploadAssetResponse = await octokit.repos.uploadReleaseAsset({ url, headers, name, file })`;
       const uploadAssetResponse = await octokit.repos.uploadReleaseAsset({ url, headers, name, file });
     }
 
